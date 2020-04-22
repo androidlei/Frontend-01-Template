@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        // 1、
+
+        function encodeUtf8(text) {
+            const code = encodeURIComponent(text);
+            const bytes = [];
+            for(let i = 0; i < code.length; i++) {
+                const c = code.charAt(i);
+                if (c === '%') {
+                    const hex = code.charAt(i + 1) + code.charAt(i + 2);
+                    const hexVal = parseInt(hex, 16);
+                    bytes.push(hexVal);
+                    i += 2;
+                } else bytes.push(c.charCodeAt(0));
+            }
+            return bytes;
+        }
+
+
+        function decodeUtf8(bytes) {
+            let encode = '';
+            for(let i = 0; i < bytes.length; i++) {
+                encode += '%' + bytes[i].toString(16);
+            }
+            return decodeURIComponent(encode);
+        }
+
+        const numReg = new RegExp(/^(.\d+|(0|[1-9]\d*).?\d*?)([eE][-+]?\d+)?$|^0[bB][01]+$|^0[oO][0-7]+$|^0[xX][0-9a-fA-F]+$/)
+
+        console.log(numReg.test(1))
+
+        const stringReg = new RegExp(/[\u0021-\u007E]{6,16}|[\x21-\x7E]{6,16}|(['"])(?:(?!\1).)*?\1/g)
+
+    </script>
+</body>
+</html>
