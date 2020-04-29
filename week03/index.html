@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        // string to number
+        function convertStringToNumber(str, x = 10) {
+            if (typeof str !== 'string') {
+                str = String(str);
+            }
+
+            str = str.trim()
+
+            const regex = /^(?<fuhao>[\+|\-]*)(?<radix>[0]?[Xx]?)(?<num>[0-9a-fA-F]+)/;
+
+            if (!regex.test(str)) {
+                return NaN;
+            }
+
+            const groups = str.match(regex).groups;
+
+            if (x && (x < 2 || x > 36)) {
+                return NaN;
+            }
+
+            // console.log(groups)
+
+            if (!x) {
+                if (groups.radix.toUpperCase() === '0X') {
+                    x = 16;
+                } else if (groups.radix === '0') {
+                    x = 8;
+                } else {
+                    x = 10;
+                }
+            }
+
+            let splitArr = groups.num.split('');
+            // console.log(splitArr)
+            const arr = [];
+
+            for (let i = 0; i < splitArr.length; i++) {
+                const charCode = splitArr[i].toUpperCase().charCodeAt();
+
+                // console.log(charCode)
+
+                let num;
+
+                if (charCode >= 65) {
+                    num = charCode - 55;
+                } else {
+                    num = charCode - 48;
+                }
+
+                if (num > x) {
+                    break;
+                } else {
+                    arr.push(num);
+                }
+            }
+
+            const len = arr.length;
+
+            let result = 0;
+
+            for (let i = 0; i < len; i++) {
+                const num = arr[i] * Math.pow(x, len - i - 1);
+                result += num;
+            }
+
+            return result * (groups.fuhao === '-' ? -1 : 1)
+        }
+
+        function convertNumberToString(number, x = 10) {
+            let integer = Math.floor(number);
+            let fraction = String(number).match(/\.\d+$/);
+            if (fraction) {
+                fraction = fraction[0].replace('.', '');
+            }
+            let string = '';
+            while (integer > 0) {
+                string = String(integer % x) + string;
+                integer = Math.floor(integer / x);
+            }
+            return fraction ? `${string}.${fraction}` : string;
+        }
+
+        console.log(convertStringToNumber("10.02123"))
+        console.log(convertStringToNumber('0xAF', 16))
+        console.log(parseInt('0xAF', 16))
+        console.log(convertNumberToString(100))
+        console.log(convertNumberToString(10.336))
+
+        // 找出js里面所有的特殊对象
+    </script>
+</body>
+</html>
